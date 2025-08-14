@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>DarkPan - Bootstrap 5 Admin Template</title>
+    <title>Admin Panel</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -49,7 +49,7 @@
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
                 <a href="index.php" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>DarkPan</h3>
+                    <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Admin Panel</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
@@ -98,9 +98,8 @@
 
                     
                     <a href="orders.php" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Orders </a>
-                    <a href="review.php" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Review</a>
-                    <a href="notification.php" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Notification</a>
-                    <a href="invoices.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Invoices</a>
+                
+                    <a href="logout.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Logout</a>
               
                 </div>
             </nav>
