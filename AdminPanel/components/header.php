@@ -86,6 +86,14 @@
                             <a href="viewProduct.php" class="dropdown-item">View Products</a>
                         </div>
                     </div>
+
+                      <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Gallery</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="addGallery.php" class="dropdown-item">Add Gallery </a>
+                            <a href="viewGallery.php" class="dropdown-item">View Gallery</a>
+                        </div>
+                    </div>
                     
 
                     

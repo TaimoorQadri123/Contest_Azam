@@ -228,5 +228,48 @@ if(isset($_GET['productId'])){
 
 
 
+// Add Gallery
+$GalleryName = $GalleryDes = $GalleryImageName = ""; 
+$GalleryNameErr = $GalleryDesErr = $GalleryImageNameErr = ""; 
+if(isset($_POST['addGallery'])){
+    $GalleryName = $_POST['cName'];
+    $GalleryDes = $_POST['cDes'];
+    $GalleryImageName = strtolower($_FILES['cImage']['name']);
+    $GalleryImageTmpName = $_FILES['cImage']['tmp_name'];
+    $extension = pathinfo($GalleryImageName,PATHINFO_EXTENSION);
+    $destination= "images/".$GalleryImageName;
+    if(empty($GalleryName)){
+        $GalleryNameErr = "Gallery Name is Required"; 
+    }
+    if(empty($GalleryDes)){
+        $GalleryDesErr = "Gallery Description is Required"; 
+    }
+    if(empty($GalleryImageName)){
+        $GalleryImageNameErr = "Image is Required"; 
+
+    }
+    else{
+        $format = ["jpg","jpeg","png","webp","svg"];
+        if(!in_array($extension,$format)){
+            $GalleryImageNameErr = "Invalid Extension";
+        }
+    }
+    if(empty($GalleryNameErr) && empty($GalleryDesErr) && empty($GalleryImageNameErr)){
+        if(move_uploaded_file($GalleryImageTmpName,$destination)){
+            $query = $pdo->prepare("insert into Gallery (name,image,description) values (:name ,:image,:des)");
+            $query->bindParam(':name',$GalleryName);
+            $query->bindParam(':des',$GalleryDes);
+            $query->bindParam(':image',$GalleryImageName);
+            $query->execute();
+            echo "<script>alert('Gallery added');</script>";
+            // echo "<script>alert('Gallery added successfully!'); location.reload();</script>";
+            // echo "<script>alert('Gallery added successfully!'); location.assign('your_page.php');</script>";
+
+
+
+        }
+    } 
+
+}
 
 ?>
