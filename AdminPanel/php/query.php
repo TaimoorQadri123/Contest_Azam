@@ -1,0 +1,232 @@
+<?php
+include("dbcon.php");
+session_start();
+
+// Add category 
+$categoryName = $categoryDes = $categoryImageName = ""; 
+$categoryNameErr = $categoryDesErr = $categoryImageNameErr = ""; 
+if(isset($_POST['addCategory'])){
+    $categoryName = $_POST['cName'];
+    $categoryDes = $_POST['cDes'];
+    $categoryImageName = strtolower($_FILES['cImage']['name']);
+    $categoryImageTmpName = $_FILES['cImage']['tmp_name'];
+    $extension = pathinfo($categoryImageName,PATHINFO_EXTENSION);
+    $destination= "images/".$categoryImageName;
+    if(empty($categoryName)){
+        $categoryNameErr = "Category Name is Required"; 
+    }
+    if(empty($categoryDes)){
+        $categoryDesErr = "Category Description is Required"; 
+    }
+    if(empty($categoryImageName)){
+        $categoryImageNameErr = "Image is Required"; 
+
+    }
+    else{
+        $format = ["jpg","jpeg","png","webp","svg"];
+        if(!in_array($extension,$format)){
+            $categoryImageNameErr = "Invalid Extension";
+        }
+    }
+    if(empty($categoryNameErr) && empty($categoryDesErr) && empty($categoryImageNameErr)){
+        if(move_uploaded_file($categoryImageTmpName,$destination)){
+            $query = $pdo->prepare("insert into categories (name,image,description) values (:name ,:image,:des)");
+            $query->bindParam(':name',$categoryName);
+            $query->bindParam(':des',$categoryDes);
+            $query->bindParam(':image',$categoryImageName);
+            $query->execute();
+            echo "<script>alert('category added');</script>";
+            // echo "<script>alert('Category added successfully!'); location.reload();</script>";
+            // echo "<script>alert('Category added successfully!'); location.assign('your_page.php');</script>";
+
+
+
+        }
+    } 
+
+}
+
+
+
+// update category 
+if(isset($_POST['updateCategory'])){
+    $categoryId = $_GET['cId'];
+    $categoryName = $_POST['cName'];
+    $categoryDes = $_POST['cDes'];
+    $query = $pdo->prepare("update categories set name = :cName , description = :cDes where id = :cId");
+    if(!empty($_FILES['cImage']['name'])){
+        $categoryImageName = $_FILES['cImage']['name'];
+        $categoryImageTmpName = $_FILES['cImage']['tmp_name'];
+        $extension = pathinfo($categoryImageName,PATHINFO_EXTENSION);
+        $destination= "images/".$categoryImageName;
+        $format = ["jpg","jpeg","png","webp","svg"];
+        if(in_array($extension,$format)){
+            if(move_uploaded_file($categoryImageTmpName,$destination)){
+                $query = $pdo->prepare("update categories set name = :cName , description = :cDes ,image = :cImage where id = :cId");
+                $query->bindParam('cImage',$categoryImageName);
+            }
+
+        }
+        else{
+            echo "<script>alert('Invalid extension')</script>";
+        }
+
+    }
+    $query->bindParam('cName',$categoryName);
+    $query->bindParam('cDes',$categoryDes);
+    $query->bindParam('cId',$categoryId);
+    $query->execute();
+    echo "<script>alert('Category updated');location.assign('viewCategory.php')</script>";
+
+
+}
+// remove  category
+if(isset($_GET['categoryId'])){
+    $categoryId = $_GET['categoryId'];
+    $query = $pdo->prepare("delete from categories where id = :cId");
+    $query->bindParam('cId',$categoryId);
+    $query->execute();
+    echo "<script>alert('Category deleted');location.assign('viewCategory.php')</script>";
+
+
+
+}
+
+
+
+// Add products
+
+
+$productName = $productPrice = $productDes = $productLocation = $productImageName = $categoryId = ""; 
+$productNameErr = $productPriceErr = $productDesErr = $productLocationErr = $productImageNameErr = $categoryIdErr = "";
+
+// if(isset($_POST['addProduct'])){
+    
+    if(isset($_POST['addProduct'])){
+        $productName = $_POST['pName'];
+        $productPrice = $_POST['pPrice'];
+        $productLocation = $_POST['pLocation'];
+        $productDes = $_POST['pDes'];
+        $categoryId =$_POST['cId'];
+        $productImageName = strtolower($_FILES['pImage']['name']);
+        $productImageTmpName = $_FILES['pImage']['tmp_name'];
+        $extension = pathinfo($productImageName,PATHINFO_EXTENSION);
+        $destination= "images/".$productImageName;
+        if(empty($productName)){
+            $productNameErr = "product Name is Required"; 
+        }
+        if(empty($productPrice)){
+            $productPriceErr = "product Price is Required"; 
+        }
+        if(empty($productLocation)){
+            $productLocationErr = "product Location is Required"; 
+        }
+        if(empty($productDes)){
+            $productDesErr = "product Description is Required"; 
+        }
+        if(empty($productImageName)){
+            $productImageNameErr = "Image is Required"; 
+    
+        }
+        if(empty($categoryId)){
+            $categoryIdErr = "cateory is Required"; 
+        }
+        else{
+            $format = ["jpg","jpeg","png","webp","svg"];
+            if(!in_array($extension,$format)){
+                $productImageNameErr = "Invalid Extension";
+            }
+        }
+
+        if(empty($productNameErr) && empty($productPriceErr) && empty($productLocationErr) && empty($productDesErr) && empty($productImageNameErr) && empty($categoryIdErr)){
+            if(move_uploaded_file($productImageTmpName,$destination)){
+                $query = $pdo->prepare("insert into products (name,price,description,location,image,c_id) values (:name ,:price ,:des ,:location ,:image,:cId)");
+                $query->bindParam(':name',$productName);
+                $query->bindParam(':price',$productPrice);
+                $query->bindParam(':des',$productDes);
+                $query->bindParam(':location',$productLocation);
+                $query->bindParam(':image',$productImageName);
+                $query->bindParam(':cId',$categoryId);           
+                $query->execute();
+                echo "<script>alert('product added');</script>";
+    
+    
+    
+            }
+        }
+        
+        
+    
+
+    
+    }
+  
+    
+
+    
+    // update product 
+
+
+  if(isset($_POST['updateProduct'])){
+
+    $productId = $_GET['pId']; // FIXED
+    $productName = $_POST['pName'];
+    $productPrice = $_POST['pPrice'];
+    $productLocation = $_POST['pLocation'];
+    $productDes = $_POST['pDes'];
+    $categoryId = $_POST['cId'];
+
+    if(!empty($_FILES['pImage']['name'])){
+        $productImageName = $_FILES['pImage']['name'];
+        $productImageTmpName = $_FILES['pImage']['tmp_name'];
+        $extension = pathinfo($productImageName,PATHINFO_EXTENSION);
+        $destination = "images/".$productImageName;
+        $format = ["jpg", "jpeg", "png", "webp", "svg"];
+        
+        if(in_array($extension, $format)){
+            if(move_uploaded_file($productImageTmpName, $destination)){
+                $query = $pdo->prepare("UPDATE products SET name = :pName, price = :pPrice, location = :plocation, description = :pDes, image = :pImage, c_id = :cId WHERE id = :pId");
+                $query->bindParam('pName', $productName);
+                $query->bindParam('pPrice', $productPrice);
+                $query->bindParam('plocation', $productLocation);
+                $query->bindParam('pDes', $productDes);
+                $query->bindParam('pImage', $productImageName);
+                $query->bindParam('cId', $categoryId);
+                $query->bindParam('pId', $productId);
+                $query->execute();
+                echo "<script>alert('Product updated with image');location.assign('viewProduct.php')</script>";
+                exit;
+            }
+        } else {
+            echo "<script>alert('Invalid extension')</script>";
+            exit;
+        }
+    } else {
+        $query = $pdo->prepare("UPDATE products SET name = :pName, price = :pPrice, location = :plocation, description = :pDes, c_id = :cId WHERE id = :pId");
+        $query->bindParam('pName', $productName);
+        $query->bindParam('pPrice', $productPrice);
+        $query->bindParam('plocation', $productLocation);
+        $query->bindParam('pDes', $productDes);
+        $query->bindParam('cId', $categoryId);
+        $query->bindParam('pId', $productId);
+        $query->execute();
+        echo "<script>alert('Product updated');location.assign('viewProduct.php')</script>";
+        exit;
+    }
+}
+
+// remove product 
+
+if(isset($_GET['productId'])){
+    $productId = $_GET['productId'];
+    $query = $pdo->prepare("DELETE FROM products WHERE id = :pId");
+    $query->bindParam(':pId', $productId);
+    $query->execute();
+    echo "<script>alert('Product deleted');location.assign('viewProduct.php')</script>";
+}
+
+
+
+
+
+?>
